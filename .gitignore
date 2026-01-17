@@ -32,7 +32,6 @@ dist-ssr
 /android/.idea
 /android/captures
 /android/local.properties
-*.apk
 *.aab
 
 # Environment
