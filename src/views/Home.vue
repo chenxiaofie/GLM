@@ -11,7 +11,7 @@ const router = useRouter()
 const eventStore = useEventStore()
 
 // 应用标题
-const appTitle = import.meta.env.VITE_APP_TITLE || '活动发现'
+// const appTitle = import.meta.env.VITE_APP_TITLE || '活动发现'
 
 // 视图模式：list（列表）或 grid（网格）
 const viewMode = ref<'list' | 'grid'>('list')
@@ -97,6 +97,14 @@ const handleImageError = (event: Event) => {
 const goToDetail = (eventId: string) => {
   router.push({ name: 'Detail', params: { id: eventId } })
 }
+// 监听滚动加载更多
+const hanldeScroll=()=>{
+  const pageNumber=eventStore.page.number||1
+  const varaible=1.5 //调整系数
+  if(document.documentElement.scrollTop/varaible>window.innerHeight*pageNumber){
+     handleLoadMore()
+  }
+}
 
 // 组件挂载时加载数据
 onMounted(async() => {
@@ -108,6 +116,7 @@ onMounted(async() => {
     eventStore.fetchEvents()
   }
   useIntersectionLoad(loadMoreRef, handleLoadMore)
+  window.addEventListener('scroll',hanldeScroll)
 })
 </script>
 
@@ -117,7 +126,8 @@ onMounted(async() => {
     <header class="sticky top-0 z-10 bg-white px-4 shadow-sm animate-fade-in">
       <div class="mx-auto flex max-w-7xl items-center justify-between">
         <h1 class="text-xl font-semibold text-gray-900">
-          {{ appTitle }}
+          <!-- {{ appTitle }} -->
+          {{ $t('message.title') }}
         </h1>
         <button
           class="btn-ghost"
@@ -163,8 +173,8 @@ onMounted(async() => {
     </div>
 
     <!-- 活动列表 -->
-    <main class="flex-1 px-4 py-4">
-      <div class="mx-auto max-w-7xl">
+    <main class="flex-1 px-4 py-4" >
+      <div class="mx-auto max-w-7xl" >
         <!-- 加载状态 - 首次加载 -->
         <div v-if="eventStore.loading && eventStore.isFirstPage" class="flex items-center justify-center py-20">
           <div class="text-center">
